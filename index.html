@@ -29,7 +29,7 @@
 
             $("#loadJsonFile").click(function (e) {
                 $.getJSON({
-                    url: "http://infraestruturasdeportugal.pt/negocios-e-servicos/horarios/partidas/9437143/2019-05-13T17:10:00+2019-05-13T17:23:59",
+                    url: "https://cors-anywhere.herokuapp.com/http://infraestruturasdeportugal.pt/negocios-e-servicos/horarios/partidas/9437143/2019-05-13T17:10:00+2019-05-13T17:23:59",
                     type: "GET",
                     dataType: "jsonp",
                     success: function (result, status, xhr) {
@@ -42,7 +42,7 @@ console.log(result);
 
             $("#flickrButton").click(function (e) {
    $.ajax({
-          url: "http://infraestruturasdeportugal.pt/negocios-e-servicos/horarios/partidas/9437143/2019-05-13T17:10:00+2019-05-13T17:23:59",
+          url: "https://cors-anywhere.herokuapp.com/http://infraestruturasdeportugal.pt/negocios-e-servicos/horarios/partidas/9437143/2019-05-13T17:10:00+2019-05-13T17:23:59",
           type: "GET",
           dataType: "jsonp",
           success: function (data) {
