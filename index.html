@@ -1,60 +1,107 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
-
-    <meta charset="utf-8" />
-
+<meta charset="utf-8" />
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 <body>
-    <h1>jQuery</h1>
-    <div class="container">
-        <div id="content">
-            <p>1. Fetch a JSON file</p>
-            <button id="loadJsonFile">Try</button>
-            <div id="jsonData"></div>
 
-            <p>2. Fetch image from Flickr API</p>
-            <button id="flickrButton">Try</button>
-            <div id="flickrData"></div>
-        </div>
-    </div>
+<div class="container">
+<h1>COMBOIOS</h1>	
+
+<select>
+  <option value="null" selected>Selecionar Estação</option>
+  <option value="9438299" >Ovar</option>
+  <option value="9437143">Mogofores</option>
+</select>
+<br><br>
+<div id="tableDiv" style="">
+
+</div>
+</div>
 
     <!--Reference to jQuery-->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+<script>
         $(document).ready(function () {
-            $("#reset").click(function (e) {
-                location.reload();
-            });
 
-            $("#loadJsonFile").click(function (e) {
-                $.getJSON({
-                    url: "https://cors-anywhere.herokuapp.com/http://infraestruturasdeportugal.pt/negocios-e-servicos/horarios/partidas/9437143/2019-05-13T17:10:00+2019-05-13T17:23:59",
-                    type: "GET",
-                    dataType: "jsonp",
-                    success: function (result, status, xhr) {
-                        var table = $("<table><tr><th>Product</th><th>Color</th><th>Price</th></tr>");
-                        var tr;
-console.log(result);
-                    }
-                });
-            });
+$('select').on('change', function (e) {
+var optionSelected = $("option:selected", this);
+var valueSelected = this.value;
+var d = new Date();
+var dnew =  function (dt, minutes) {
+    return new Date(dt.getTime() + minutes*60000);
+}
+var d30 = dnew(new Date(), 70);
+var today_date =
+	d.getFullYear() + "-" +
+	("0" + (d.getMonth() + 1)).slice(-2) + "-" + 
+	("0" + d.getDate()).slice(-2);	
 
-            $("#flickrButton").click(function (e) {
-   $.ajax({
-          url: "https://cors-anywhere.herokuapp.com/http://infraestruturasdeportugal.pt/negocios-e-servicos/horarios/partidas/9437143/2019-05-13T17:10:00+2019-05-13T17:23:59",
-          type: "GET",
-          dataType: "jsonp",
-          success: function (data) {
-      console.log(data); 
-// and other stuff i do with the data i get 
-  }, 
-          xhrFields: {
-        withCredentials: false
-      } 
-        }) // end ajax
-            });
-        });
-    </script>
+var hours = d.getHours();
+hours = hours > 9 ? hours : '0' + hours;
+var hours30 = d30.getHours();
+hours30 = hours30 > 9 ? hours30 : '0' + hours30;
+
+var minutes = d.getMinutes();
+minutes = minutes > 9 ? minutes : '0' + minutes;
+var minutes30 = d30.getMinutes();
+minutes30 = minutes30 > 9 ? minutes30 : '0' + minutes30;
+
+var seconds = d.getSeconds();
+seconds = seconds > 9 ? seconds : '0' + seconds;
+var seconds30 = d30.getSeconds();
+seconds30 = seconds30 > 9 ? seconds30 : '0' + seconds30;
+
+var time = hours + ":" + minutes + ":" + seconds;	
+var time_30 = hours30 + ":" + minutes30 + ":" + seconds30;		
+
+$.ajax({
+    beforeSend: function(request) {
+    request.setRequestHeader("X-Mashape-Key", 'key_here');
+    },
+    dataType: "json",
+    url: "https://cors-anywhere.herokuapp.com/http://infraestruturasdeportugal.pt/negocios-e-servicos/horarios/partidas/"+valueSelected+"/"+today_date+"T"+time+"+"+today_date+"T"+time_30,
+    success: function(data) {
+    //$( "#content" ).append(data.HorarioDetalhe.EstadoComboio["Descricao"]);
+		console.log(data);
+		console.log(data.HorarioDetalhe.length);
+	var number_of_rows = data.HorarioDetalhe.length;	
+	var k = 0;
+    var table_body = '<table border="2" cellpadding="10" id="example"><thead><tr><th>Origem</th><th>Destino</th><th>Hora</th><th>Estado</th></tr></thead><tbody>';	
+	
+        
+              for(i =0;i<data.HorarioDetalhe.length;i++){
+                    table_body+='<tr>';
+                    table_body +='<td>';
+                    table_body +=data.HorarioDetalhe[i].EstacaoOrigem["Nome"];
+                    table_body +='</td>';
+                   
+                    table_body +='<td>';
+                    table_body +=data.HorarioDetalhe[i].EstacaoDestino["Nome"];
+                    table_body +='</td>';
+					
+                    table_body +='<td>';
+					var aDate = data.HorarioDetalhe[i].HoraPartida.split(" ");
+                    table_body +=aDate[1];
+                    table_body +='</td>';
+
+                    table_body +='<td>';
+                    table_body +=data.HorarioDetalhe[i].EstadoComboio["Descricao"];
+                    table_body +='</td>';
+					
+                    table_body+='</tr>';
+              }
+              k++;
+            
+	table_body+='</tbody></table>';
+    $('#tableDiv').html(table_body);		
+	
+    }
+});
+
+});
+});
+</script>
 </body>
 </html>
