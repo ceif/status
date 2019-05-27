@@ -29,10 +29,10 @@
 $('select').on('change', function (e) {
 var optionSelected = $("option:selected", this);
 var valueSelected = this.value;
-var d = new Date();
 var dnew =  function (dt, minutes) {
     return new Date(dt.getTime() + minutes*60000);
 }
+var d = new Date(new Date().getTime() - 15*60000);
 var d30 = dnew(new Date(), 70);
 var today_date =
 	d.getFullYear() + "-" +
