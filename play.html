@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <script type="text/javascript" src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js?loadCastFramework=1"></script>
+    <script>
+      window["__onGCastApiAvailable"] = function(isAvailable) {
+        if (isAvailable) {
+          cast.framework.CastContext.getInstance().setOptions({
+            receiverApplicationId: "A8553FD7", // Adapt this
+            autoJoinPolicy: chrome.cast.AutoJoinPolicy.ORIGIN_SCOPED // And this if you want to
+          });
+        }
+      };
+    </script>
+    <script>
+      function startCasting(sourceDescription) {
+        var castSession = cast.framework.CastContext.getInstance().getCurrentSession();
+        var mediaInfo = new chrome.cast.media.MediaInfo(
+          sourceDescription.sources[0].src,
+          sourceDescription.sources[0].type
+        );
+        var request = new chrome.cast.media.LoadRequest(mediaInfo);
+        request.customData = { sourceDescription: sourceDescription };
+        castSession.loadMedia(request).then(
+          function() {
+            console.log("Load succeed");
+          },
+          function(errorCode) {
+            console.log("Error code: " + errorCode);
+          }
+        );
+        var player = new cast.framework.RemotePlayer();
+        var playerController = new cast.framework.RemotePlayerController(
+          player
+        );
+        return playerController;
+      }
+    </script>
+  </head>
+  <body></body>
+</html>
